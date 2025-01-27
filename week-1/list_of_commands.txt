@@ -1,0 +1,64 @@
+# VIDEO 4:
+
+# menambahkan bagian terkait network
+docker run -it \
+    -e POSTGRES_USER="postgres" \
+    -e POSTGRES_PASSWORD="root" \
+    -e POSTGRES_DB="ny_taxi" \
+    -v //$(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \
+    -v //$(pwd)/init.sql:/docker-entrypoint-initdb.d/init.sql \
+    -p 5432:5432 \
+    --network=pg-network \
+    --name pg-database \
+    postgres:17
+
+docker run -it \
+    -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+    -e PGADMIN_DEFAULT_PASSWORD="root" \
+    -p 8080:80 \
+    --network=pg-network \
+    --name pgadmin \
+    dpage/pgadmin4
+
+COMMAND UNTUK SHARE DATA KE LOCALHOST [JADI URL]
+python -m http.server
+
+COMMAND MEMINDAH FILE PYTHON KE CONTAINER
+docker run --network pg-network -it -v //$(pwd):/app python:3.11 bash
+
+COMMAND UNTUK MENJALANKAN INSERT DATA [URL PILIH SALAH SATU SAJA]
+--URL="https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2021-01.parquet"
+URL="http://172.30.32.1:8000/dataset/yellow_tripdata_2021-01.parquet"
+
+python ingest_data.py \
+    --user=postgres \
+    --password=root \
+    --host=pg-database \
+    --port=5432 \
+    --db=ny_taxi \
+    --table_name=yellow_taxi_trips \
+    --url=${URL}
+
+##
+URL="http://172.30.32.1:8000/dataset/green_tripdata_2019-10.csv/green_tripdata_2019-10.csv"
+
+python ingest_data.py \
+    --user=postgres \
+    --password=root \
+    --host=pg-database \
+    --port=5432 \
+    --db=ny_taxi \
+    --table_name=green_taxi_trips \
+    --url=${URL}
+
+##
+URL="http://172.30.32.1:8000/dataset/taxi_zone_lookup.csv"
+
+python ingest_data.py \
+    --user=postgres \
+    --password=root \
+    --host=pg-database \
+    --port=5432 \
+    --db=ny_taxi \
+    --table_name=taxi_zone_lookup \
+    --url=${URL}
