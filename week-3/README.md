@@ -41,6 +41,7 @@ How many records have a fare_amount of 0?
 - 8,333
 
 **Answer:**
+8,333
 
 ## Question 5:
 What is the best strategy to make an optimized table in Big Query if your query will always filter based on tpep_dropoff_datetime and order the results by VendorID (Create a new table with this strategy)
@@ -50,7 +51,7 @@ What is the best strategy to make an optimized table in Big Query if your query 
 - Partition by tpep_dropoff_datetime and Partition by VendorID
 
 **Answer:**
-8,333
+Partition by tpep_dropoff_datetime and Cluster on VendorID
 
 ## Question 6:
 Write a query to retrieve the distinct VendorIDs between tpep_dropoff_datetime
